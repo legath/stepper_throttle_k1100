@@ -65,7 +65,7 @@ SET(PROJECT_SOURCES
         src/main.h
         src/clocker/clock.c
         src/clocker/clock.h
-        src/spi.c src/spi.h src/error_handler.c src/error_handler.h)
+        src/spi.c src/spi.h src/error_handler.c src/error_handler.h src/display/ili9163c.c src/display/ili9163c.h)
 
 
 
