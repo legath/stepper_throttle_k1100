@@ -6,7 +6,7 @@ ADD_DEFINITIONS(-DSTM32F103xB)
 
 include(stm32.cmake)
 
-PROJECT(stm32_hal_template)
+PROJECT(Stepper_throttle_k1100)
 
 ## float version of printf()
 #SET(PRINTF_FLOAT TRUE)
@@ -65,7 +65,7 @@ SET(PROJECT_SOURCES
         src/main.h
         src/clocker/clock.c
         src/clocker/clock.h
-        )
+        src/spi.c src/spi.h src/error_handler.c src/error_handler.h)
 
 
 

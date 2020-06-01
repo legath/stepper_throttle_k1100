@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include "clocker/clock.h"
+#include "spi.h"
 
 int main(void) {
 
@@ -15,14 +16,13 @@ int main(void) {
     clock_start(CLOCK_SOURCE_PLL, 8000000, CLOCK_PLL_MUL_9);
 		while (clock_values.Source != CLOCK_SOURCE_PLL);
 
-
-
     __HAL_RCC_GPIOC_CLK_ENABLE();
     GPIO_InitTypeDef g;
     g.Mode = GPIO_MODE_OUTPUT_PP;
     g.Speed = GPIO_SPEED_FREQ_LOW;
     g.Pin = GPIO_PIN_13;
     HAL_GPIO_Init(GPIOC, &g);
+    spi1_init();
 
     while (1) {
         HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);

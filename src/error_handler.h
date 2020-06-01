@@ -1,0 +1,10 @@
+//
+// Created by legath on 01.06.2020.
+//
+
+#ifndef STEPPER_THROTTLE_K1100_ERROR_HANDLER_H
+#define STEPPER_THROTTLE_K1100_ERROR_HANDLER_H
+
+void error_handler(void );
+
+#endif //STEPPER_THROTTLE_K1100_ERROR_HANDLER_H
