@@ -5,7 +5,7 @@
 #include "spi.h"
 #include "error_handler.h"
 
-SPI_HandleTypeDef hspi1;
+static SPI_HandleTypeDef hspi1;
 
 static void spi1_lowlevelInit(void) {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -46,6 +46,11 @@ void spi1_init(void) {
     if (HAL_SPI_Init(&hspi1) != HAL_OK) {
         error_handler();
     }
+}
+void spi1_writeByte(uint8_t val){
+    //while((SPI1->SR & SPI_SR_TXE)==RESET){}
+    //SPI1->DR = val;
+    HAL_SPI_Transmit(&hspi1, &val, 1, 0x1000);
 }
 
 

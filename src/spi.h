@@ -12,6 +12,8 @@ extern "C" {
 #include "stm32f1xx_hal.h"
 void spi1_init(void);
 
+void spi1_writeByte(uint8_t val);
+
 #ifdef __cplusplus
 }
 #endif

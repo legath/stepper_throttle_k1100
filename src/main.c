@@ -4,7 +4,10 @@
 #include <math.h>
 #include "clocker/clock.h"
 #include "spi.h"
+#include "gpio.h"
+#include "display/ili9163c.h"
 
+#include "testpic.c"
 int main(void) {
 
     __HAL_RCC_AFIO_CLK_ENABLE();
@@ -23,6 +26,15 @@ int main(void) {
     g.Pin = GPIO_PIN_13;
     HAL_GPIO_Init(GPIOC, &g);
     spi1_init();
+    gpio_init();
+    ili9163c_init();
+    ili9163c_drawRectFilled(0,0,128,128, rgb24to16(0,127,127));
+
+    for (int i = 0; i<usTestpic[1]; i++){
+        for(int j=0; j<usTestpic[0]; j++){
+            ili9163c_drawPixel(j,i, usTestpic[2+i*usTestpic[0]+j]);
+        }
+    }
 
     while (1) {
         HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
