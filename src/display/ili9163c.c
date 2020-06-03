@@ -1,14 +1,14 @@
 //
 // Created by legath on 01.06.2020.
 //
-
+#include "stdarg.h"
 #include "ili9163c.h"
 static void ili9163c_hwreset();
 static void ili9163c_writeCmd(uint8_t cmd);
 static void ili9163c_writeData(uint8_t val);
 
 static uint8_t active_width=128;
-static uint8_t active_height=160;
+static uint8_t active_height=128;
 enum Rotation {
     ROT0 = 0,	// portrait
     ROT90 = 96,	// landscape
@@ -138,19 +138,6 @@ void ili9163c_setAddress(uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2) {
 
 //rotate screen at desired orientation
 void ili9163c_setRotation(uint8_t rotation) {
-    switch (rotation) {
-        case ROT0:
-        case ROT180:
-            active_width=128;
-            active_height=160;
-            break;
-        case ROT90:
-        case ROT270:
-            active_width=160;
-            active_height=128;
-            break;
-
-    }
     ili9163c_writeCmd(ILI9163_CMD_SET_ADDRESS_MODE);
     ili9163c_writeData(rotation);
 }
@@ -169,6 +156,62 @@ void ili9163c_drawPixel(uint8_t x, uint8_t y, uint16_t colour) {
     if ((x < 0) || (x >= active_width) || (y < 0) || (y >= active_height)) return;
     ili9163c_setAddress(x, y, x + 1, y + 1);
     ili9163c_writeData16(colour);
+}
+void ili9163c_drawPixelSized(uint8_t x, uint8_t y, uint8_t size, uint16_t colour) {
+    if (size == 1) // default size or big size
+        ili9163c_drawPixel(x, y, colour);
+    else
+        ili9163c_drawRectFilled(x, y, size, size, colour);
+}
+
+void ili9163c_drawChar( uint8_t x, uint8_t y, char c, uint8_t size, uint16_t colour, uint16_t bg) {
+    // draw. optimisation:6th font line is set as 0, to lower font array size
+    for (int8_t i=0; i < FONT_WIDTH; i++ ) {
+        uint8_t line = (i == FONT_WIDTH-1)? 0 : font5x8[(c * (FONT_WIDTH - 1)) + i];
+        for (int8_t j = 0; j < FONT_HEIGHT; j++) {
+            if (line & 0x1) {
+                if (colour != TRANSPARENT) ili9163c_drawPixelSized(x + i*size, y + j*size, size, colour);
+            }
+            else {
+                if (bg != TRANSPARENT) ili9163c_drawPixelSized(x + i*size, y + j*size, size, bg);
+            }
+            line >>= 1;
+        }
+    }
+}
+
+// Plot a string of characters to the LCD: with the current font the screen allows up to 21x16 characters
+void ili9163c_drawString(uint16_t x, uint16_t y, uint8_t size, uint16_t colour, uint16_t bg,  const char *string) {
+    if (x == CENTERX) {
+        x = (active_width - size * FONT_WIDTH * strlen(string)) / 2;
+    }
+    if (y == CENTERY) {
+        y = (active_height - size * FONT_HEIGHT) / 2;
+    }
+    unsigned char c;
+    while ( (c = *string++) ) {
+        if (c == '\r') continue;
+        if (c != '\n') ili9163c_drawChar(x, y, c, size, colour, bg);
+        // new line check
+        if(c == '\n' || x > active_width - 2 * FONT_WIDTH * size) {
+            x = 0;
+            y += size * FONT_HEIGHT;
+        } else {
+            x += size * FONT_WIDTH;
+        }
+    }
+}
+
+void ili9163c_drawStringF(uint16_t x, uint16_t y, uint8_t size, uint16_t colour, uint16_t bg, char *szFormat, ...) {
+    char szBuffer[256]; //in this buffer we form the message
+    int NUMCHARS = sizeof(szBuffer) / sizeof(szBuffer[0]);
+    int LASTCHAR = NUMCHARS - 1;
+    va_list pArgs;
+    va_start(pArgs, szFormat);
+    vsnprintf(szBuffer, NUMCHARS - 1, szFormat, pArgs);
+    va_end(pArgs);
+
+    ili9163c_drawString(x, y, size, colour, bg, szBuffer);
 }
 uint16_t rgb24to16(uint8_t r, uint8_t g, uint8_t b) {
     return ((b>>3) << 11) | ((g>>2) << 5) | (r>>3);

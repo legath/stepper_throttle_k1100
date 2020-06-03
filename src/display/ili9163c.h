@@ -4,8 +4,14 @@
 
 #ifndef STEPPER_THROTTLE_K1100_ILI9163C_H
 #define STEPPER_THROTTLE_K1100_ILI9163C_H
+#include <string.h>
 #include "gpio.h"
 #include "spi.h"
+#include "colors.h"
+#include "font5x8.h"
+
+#define CENTERX -1
+#define CENTERY -1
 
 // ILI9163 LCD Controller Commands
 #define ILI9163_CMD_NOP                     0x00
