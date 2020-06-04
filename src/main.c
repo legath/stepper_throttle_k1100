@@ -6,6 +6,7 @@
 #include "spi.h"
 #include "gpio.h"
 #include "display/ili9163c.h"
+#include "usart.h"
 
 int main(void) {
 
@@ -28,7 +29,8 @@ int main(void) {
     gpio_init();
     ili9163c_init();
     ili9163c_drawRectFilled(0,0,128,128, rgb24to16(0,127,127));
-
+    uart2_init();
+    uart2_start_receive();
 
 
     while (1) {
