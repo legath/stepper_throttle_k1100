@@ -6,6 +6,7 @@
 #include "spi.h"
 #include "gpio.h"
 #include "display/ili9163c.h"
+#include "measure.h"
 #include "usart.h"
 
 int main(void) {
@@ -17,7 +18,7 @@ int main(void) {
     clock_set_pre(CLOCK_SOURCE_PLL, CLOCK_AHB_PRE_1, CLOCK_APB_PRE_1, CLOCK_APB_PRE_1);
     clock_set_systick(CLOCK_DEFAULT_SYSTICK_FQ);
     clock_start(CLOCK_SOURCE_PLL, 8000000, CLOCK_PLL_MUL_9);
-		while (clock_values.Source != CLOCK_SOURCE_PLL);
+    while (clock_values.Source != CLOCK_SOURCE_PLL);
 
     __HAL_RCC_GPIOC_CLK_ENABLE();
     GPIO_InitTypeDef g;
@@ -28,9 +29,9 @@ int main(void) {
     spi1_init();
     gpio_init();
     ili9163c_init();
-    ili9163c_drawRectFilled(0,0,128,128, rgb24to16(0,127,127));
-    uart2_init();
-    uart2_start_receive();
+    ili9163c_drawRectFilled(0, 0, 128, 128, BLACK);
+    measure_init();
+    measure_start();
 
 
     while (1) {

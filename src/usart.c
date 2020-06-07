@@ -3,6 +3,7 @@
 //
 
 #include "usart.h"
+#include "display/ili9163c.h"
 
 static UART_HandleTypeDef huart2;
 USART_prop_ptr usartprop;
@@ -38,7 +39,7 @@ static void uart2_llinit() {
 void uart2_init(void) {
     uart2_llinit();
     huart2.Instance = USART2;
-    huart2.Init.BaudRate = 115200;
+    huart2.Init.BaudRate = 9600;
     huart2.Init.WordLength = UART_WORDLENGTH_8B;
     huart2.Init.StopBits = UART_STOPBITS_1;
     huart2.Init.Parity = UART_PARITY_NONE;
@@ -56,6 +57,8 @@ void uart2_start_receive(void) {
 
 void string_parse(char *buf_str) {
     HAL_UART_Transmit(&huart2, (uint8_t *) buf_str, strlen(buf_str), 0x1000);
+    ili9163c_drawRectFilled(0,0,128,128, BLACK);
+    ili9163c_drawStringF(10, 10 , 1, GREEN, BLACK, "%s", buf_str);
 }
 
 static void UART2_RxCpltCallback(void) {

@@ -83,4 +83,5 @@ void ili9163c_init();
 void ili9163c_drawRectFilled(uint16_t x,uint16_t y,uint16_t w,uint16_t h,uint16_t colour);
 uint16_t rgb24to16(uint8_t r, uint8_t g, uint8_t b);
 void ili9163c_drawPixel(uint8_t x, uint8_t y, uint16_t colour);
+void ili9163c_drawStringF(uint16_t x, uint16_t y, uint8_t size, uint16_t colour, uint16_t bg, char *szFormat, ...);
 #endif //STEPPER_THROTTLE_K1100_ILI9163C_H
