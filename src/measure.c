@@ -4,10 +4,11 @@
 
 #include "measure.h"
 #include "error_handler.h"
+#include "display/ili9163c.h"
 
 static ADC_HandleTypeDef hadc1;
 static DMA_HandleTypeDef hdma_adc1;
-static volatile uint16_t adc[2] = {0,};
+volatile uint16_t adc[2] = {0,};
 
 static void adc_dma_init(void)
 {
@@ -104,9 +105,11 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
     if(hadc->Instance == ADC1) //check if the interrupt comes from ACD1
     {
-        HAL_ADC_Stop_DMA(&hadc1); // это необязательно
-        adc[0] = 0;
-        adc[1] = 0;
+        HAL_ADC_Stop_DMA(&hadc1);
+
+       // adc[0] = 0;
+        //adc[1] = 0;
+
         HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc, 2);
     }
 }

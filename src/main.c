@@ -8,7 +8,7 @@
 #include "display/ili9163c.h"
 #include "measure.h"
 #include "usart.h"
-
+extern volatile uint16_t adc[2] ;
 int main(void) {
 
     __HAL_RCC_AFIO_CLK_ENABLE();
@@ -36,6 +36,8 @@ int main(void) {
 
     while (1) {
         HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+        ili9163c_drawRectFilled(0,0,128,8,BLACK);
+        ili9163c_drawStringF(0, 0,1, GREEN, BLACK,"adc1 %d, adc2 %d", adc[0], adc[1] );
         HAL_Delay(1000);
     }
 
